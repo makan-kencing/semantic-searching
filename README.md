@@ -17,3 +17,10 @@ in multiple methods.
 ### Method 2
 
 ### Method 3
+
+
+## Setup
+
+```shell
+ uv run --group build ./scripts/download_data.py --dataset-dir ./data --model-dir ./models
+```
