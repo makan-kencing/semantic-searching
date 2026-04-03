@@ -5,6 +5,7 @@ description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]",
+    "pydantic",
     "numpy",
     "polars",
     "txtai",
