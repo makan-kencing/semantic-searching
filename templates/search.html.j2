@@ -4,16 +4,20 @@
 
         <p>{{ row["abstract"] }}</p>
 
-        <p>Algorithm rank: {{ row["score"] }}</p>
+        <details>
+            <summary>Details</summary>
 
-        <table class="metrics">
-            <caption>
-                Metrics
-            </caption>
-            <tr>
-                <th>Similarity:</th>
-                <td>{{ row["similarity_metric"] }}</td>
-            </tr>
-        </table>
+            <p>Algorithm rank: {{ row["score"] }}</p>
+
+            <table>
+                <caption>
+                    Metrics
+                </caption>
+                <tr>
+                    <th>Similarity:</th>
+                    <td>{{ row["similarity_metric"] }}</td>
+                </tr>
+            </table>
+        </details>
     </div>
 {% endfor %}

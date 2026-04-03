@@ -27,10 +27,23 @@
         <span class="htmx-indicator">
             <img src="{{ url_for("static", path="img/bars.svg") }}" alt="">
         </span>
+
+        <input id="toggle-details" type="checkbox">
+        <label for="toggle-details">Show Details</label>
     </form>
 
     <div id="search-results">
     </div>
 </div>
+<script>
+    document.querySelector("input#toggle-details").addEventListener("change", (event) => {
+        const detail_tags = document.querySelectorAll("details");
+        if (event.target.checked)
+            detail_tags.forEach((value) => value.setAttribute("open", ""));
+        else
+            detail_tags.forEach((value) => value.removeAttribute("open"));
+    })
+</script>
+
 </body>
 </html>
