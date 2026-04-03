@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from huggingface_hub.errors import BadRequestError
+from txtai.pipeline import Similarity
 
 from app.engine.base import SearchEngine
 from app.engine.word2vec import Word2VecSearchEngine
@@ -15,10 +16,13 @@ from app.engine.bert import BERTSearchEngine
 from app.schemas import ApplicationContext
 
 search_engines: dict[type[SearchEngine], SearchEngine] = {}
+similarity: Similarity
 logger = logging.getLogger("uvicorn.error")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global similarity
+
     logger.info("Reading FYP dataset.")
     documents = pl.read_csv("./data/fyp.csv", has_header=True).filter(pl.col("abstract").is_not_null())
 
@@ -31,6 +35,8 @@ async def lifespan(app: FastAPI):
     bert = BERTSearchEngine(Path("./models/GoogleNews-vectors-negative300.bin"))
     bert.load(documents, "abstract")
     search_engines[BERTSearchEngine] = bert
+
+    similarity = Similarity("valhalla/distilbart-mnli-12-3")
 
     yield
 
@@ -55,6 +61,9 @@ async def search(request: Request, query: str, type: str):
             continue
 
         documents = engine.search(query, 10)
+        scores = similarity(query, documents["abstract"].to_list())
+        scores = pl.DataFrame(scores, schema=["index", "similarity"], orient="row").sort("index")
+        documents = pl.concat((documents, scores), how="horizontal")
         return templates.TemplateResponse(request=request, name="search.html.j2", context={
             "documents": documents
         })

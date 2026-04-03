@@ -3,5 +3,12 @@
         <h2>{{ row["title"] }}</h2>
 
         <p>{{ row["abstract"] }}</p>
+
+        <table class="metrics">
+            <tr>
+                <th>Similarity</th>
+                <td>{{ row["similarity"] }}</td>
+            </tr>
+        </table>
     </div>
 {% endfor %}
