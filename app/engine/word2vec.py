@@ -72,7 +72,7 @@ class Word2VecSearchEngine(SearchEngine):
         scores = cosine_similarity(query_vectors, self.document_vectors)[0]
 
         return self.documents.with_columns(
-            pl.Series("similarity_score", scores)
+            pl.Series("score", scores)
         ).sort(
-            "similarity_score", descending=True
+            "score", descending=True
         ).head(top_k)

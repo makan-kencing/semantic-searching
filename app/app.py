@@ -49,7 +49,6 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    str(Word2VecSearchEngine)
     return templates.TemplateResponse(request=request, name="index.html.j2", context={
         "context": ApplicationContext(available_engines=tuple(search_engines.keys()))
     })
@@ -63,7 +62,7 @@ async def search(request: Request, query: str, type: str):
 
         documents = engine.search(query, 10)
         scores = similarity(query, documents["abstract"].to_list())
-        scores = pl.DataFrame(scores, schema=["index", "similarity"], orient="row").sort("index")
+        scores = pl.DataFrame(scores, schema=["index", "similarity_metric"], orient="row").sort("index")
         documents = pl.concat((documents, scores), how="horizontal")
         return templates.TemplateResponse(request=request, name="search.html.j2", context={
             "documents": documents

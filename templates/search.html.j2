@@ -4,10 +4,15 @@
 
         <p>{{ row["abstract"] }}</p>
 
+        <p>Algorithm rank: {{ row["score"] }}</p>
+
         <table class="metrics">
+            <caption>
+                Metrics
+            </caption>
             <tr>
-                <th>Similarity</th>
-                <td>{{ row["similarity"] }}</td>
+                <th>Similarity:</th>
+                <td>{{ row["similarity_metric"] }}</td>
             </tr>
         </table>
     </div>
