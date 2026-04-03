@@ -2308,8 +2308,10 @@ source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "gensim" },
+    { name = "numpy" },
     { name = "polars" },
     { name = "scikit-learn" },
+    { name = "tqdm" },
     { name = "txtai" },
 ]
 
@@ -2320,7 +2322,6 @@ build = [
     { name = "click" },
     { name = "kagglehub", extra = ["polars-datasets"] },
     { name = "lxml" },
-    { name = "tqdm" },
 ]
 dev = [
     { name = "ipykernel" },
@@ -2330,8 +2331,10 @@ dev = [
 requires-dist = [
     { name = "fastapi", extras = ["standard"] },
     { name = "gensim" },
+    { name = "numpy" },
     { name = "polars" },
     { name = "scikit-learn" },
+    { name = "tqdm" },
     { name = "txtai" },
 ]
 
@@ -2342,7 +2345,6 @@ build = [
     { name = "click" },
     { name = "kagglehub", extras = ["polars-datasets"] },
     { name = "lxml" },
-    { name = "tqdm" },
 ]
 dev = [{ name = "ipykernel", specifier = ">=7.2.0" }]
 

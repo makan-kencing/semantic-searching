@@ -5,10 +5,12 @@ description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]",
+    "numpy",
     "polars",
     "txtai",
     "gensim",
-    "scikit-learn"
+    "scikit-learn",
+    "tqdm"
 ]
 
 [dependency-groups]
@@ -17,12 +19,9 @@ build = [
     "kagglehub[polars-datasets]",
     "aiohttp[speedups]",
     "beautifulsoup4",
-    "lxml",
-    "tqdm"
+    "lxml"
 ]
 dev = [
     "ipykernel>=7.2.0",
 ]
 
-[project.scripts]
-web = "semantic_searching.app:app"
