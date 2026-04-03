@@ -1,0 +1,7 @@
+{% for row in documents.iter_rows(named=True) %}
+    <div>
+        <h2>{{ row["title"] }}</h2>
+
+        <p>{{ row["abstract"] }}</p>
+    </div>
+{% endfor %}
