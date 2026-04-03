@@ -23,19 +23,20 @@ logger = logging.getLogger("uvicorn.error")
 async def lifespan(app: FastAPI):
     global similarity
 
-    logger.info("Reading FYP dataset.")
+    logger.info("Dataset: Reading FYP dataset.")
     documents = pl.read_csv("./data/fyp.csv", has_header=True).filter(pl.col("abstract").is_not_null())
 
-    logger.info("Loading Word2Vec engine.")
+    logger.info("Engine: Loading Word2Vec engine.")
     word2vec = Word2VecSearchEngine(Path("./models/GoogleNews-vectors-negative300.bin"))
     word2vec.load(documents, "abstract")
     search_engines[Word2VecSearchEngine] = word2vec
 
-    logger.info("Loading BERT engine.")
+    logger.info("Engine: Loading BERT engine.")
     bert = BERTSearchEngine(Path("./models/GoogleNews-vectors-negative300.bin"))
     bert.load(documents, "abstract")
     search_engines[BERTSearchEngine] = bert
 
+    logger.info("Model: Loading similarity model.")
     similarity = Similarity("valhalla/distilbart-mnli-12-3")
 
     yield

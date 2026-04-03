@@ -20,6 +20,7 @@ class Word2VecSearchEngine(SearchEngine):
         if not word2vec_model_path.exists():
             raise FileNotFoundError
 
+        logger.info("Model: Loading Word2Vec model")
         self.model: KeyedVectors = KeyedVectors.load_word2vec_format(str(word2vec_model_path), binary=True)
         self.documents: pl.DataFrame | None = None
         self.document_vectors: np.ndarray | None = None
