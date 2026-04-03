@@ -61,9 +61,10 @@ async def search(request: Request, query: str, type: str):
             continue
 
         documents = engine.search(query, 10)
-        scores = similarity(query, documents["abstract"].to_list())
-        scores = pl.DataFrame(scores, schema=["index", "similarity_metric"], orient="row").sort("index")
-        documents = pl.concat((documents, scores), how="horizontal")
+        if len(documents) > 0:
+            scores = similarity(query, documents["abstract"].to_list())
+            scores = pl.DataFrame(scores, schema=["index", "similarity_metric"], orient="row").sort("index")
+            documents = pl.concat((documents, scores), how="horizontal")
         return templates.TemplateResponse(request=request, name="search.html.j2", context={
             "documents": documents
         })

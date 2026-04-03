@@ -20,7 +20,7 @@ class Word2VecSearchEngine(SearchEngine):
         if not word2vec_model_path.exists():
             raise FileNotFoundError
 
-        logger.info("Model: Loading Word2Vec model")
+        logger.info("Model: Loading Word2Vec model.")
         self.model: KeyedVectors = KeyedVectors.load_word2vec_format(str(word2vec_model_path), binary=True)
         self.documents: pl.DataFrame | None = None
         self.document_vectors: np.ndarray | None = None
@@ -67,6 +67,10 @@ class Word2VecSearchEngine(SearchEngine):
 
         query_words = query.lower().split()
         query_vectors = [self.model[word] for word in query_words if word in self.model]
+
+        if not query_vectors:
+            return self.documents.head(0)
+
         query_vectors = np.mean(query_vectors, axis=0).reshape(1, -1)
 
         scores = cosine_similarity(query_vectors, self.document_vectors)[0]
