@@ -17,9 +17,15 @@
         <input id="search" name="query" type="search">
 
         <select name="type" id="type">
-            {% for engine in context.available_engines %}
-                <option value="{{ engine.__name__ }}">{{ engine.__name__ }}</option>
+            {% for pipeline in context.available_pipelines %}
+                <option value="{{ pipeline }}">{{ pipeline }}</option>
             {% endfor %}
+        </select>
+
+        <select name="top_k" id="top_k">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
         </select>
 
         <button type="submit">Search</button>

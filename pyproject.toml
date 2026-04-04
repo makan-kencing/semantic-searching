@@ -2,7 +2,7 @@
 name = "semantic-searching"
 version = "0.1.0"
 description = "Add your description here"
-requires-python = ">=3.13"
+requires-python = "~=3.13.0"
 dependencies = [
     "fastapi[standard]",
     "pydantic",
@@ -11,7 +11,11 @@ dependencies = [
     "txtai",
     "gensim",
     "scikit-learn",
-    "tqdm"
+    "tqdm",
+    "torch",
+    "haystack-ai",
+    "sentence_transformers",
+    "transformers<5"
 ]
 
 [dependency-groups]
@@ -25,4 +29,3 @@ build = [
 dev = [
     "ipykernel>=7.2.0",
 ]
-
