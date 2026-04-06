@@ -6,6 +6,7 @@ from haystack.components.retrievers import InMemoryEmbeddingRetriever
 
 from app.bert.components import BERTDocumentEmbedder, BERTTextEmbedder
 from app.components import Passthrough, SimilarityEvaluator
+from app.utils import get_or_create_document_store
 
 logger = logging.getLogger("uvicorn.error")
 cache = Path("./cache/bert.bin")
