@@ -1,7 +1,6 @@
 import logging
 from pathlib import Path
 
-from gensim.models import KeyedVectors
 from haystack import Pipeline, Document
 from haystack.components.retrievers import InMemoryEmbeddingRetriever
 
@@ -13,15 +12,9 @@ logger = logging.getLogger("uvicorn.error")
 cache = Path("./cache/word2vec.bin")
 
 
-def create(model_path: Path, documents: list[Document]) -> Pipeline:
-    if not model_path.exists():
-        raise FileNotFoundError
-
-    logger.info(f"Loading {model_path.name} Word2Vec model.")
-    model = KeyedVectors.load_word2vec_format(str(model_path), binary=True)
-
-    doc_embedder = Word2VecDocumentEmbedder(model=model)
-    text_embedder = Word2VecTextEmbedder(model=model)
+def create(documents: list[Document]) -> Pipeline:
+    doc_embedder = Word2VecDocumentEmbedder(model="word2vec-google-news-300")
+    text_embedder = Word2VecTextEmbedder(model="word2vec-google-news-300")
     evaluator = SimilarityEvaluator("valhalla/distilbart-mnli-12-3")
 
     logger.info("Creating Word2Vec document embeddings.")

@@ -2,8 +2,6 @@
 import asyncio
 import csv
 import logging
-import shutil
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import AsyncIterable
@@ -105,58 +103,6 @@ async def download_fyp_dataset(out_dir: Path) -> None:
                 writer.writerow((doc.title, doc.abstract, doc.webpage_url, doc.document_url))
 
 
-async def download_word2vec_model(out_dir: Path) -> None:
-    filepath = out_dir / "GoogleNews-vectors-negative300.bin"
-    if filepath.exists():
-        return
-
-    async with aiohttp.ClientSession() as session:
-        url = "https://drive.usercontent.google.com/download"
-        params = {
-            "id": "0B7XkCwpI5KDYNlNUTTlSS21pQmM",
-        }
-
-        async def handle_file_too_big(response: aiohttp.ClientResponse) -> None:
-            soup = BeautifulSoup(await ret.read(), "lxml")
-
-            for input_tag in soup.select("#download-form input"):
-                if input_tag.get("type") == "submit":
-                    continue
-
-                name = input_tag.get("name")
-                value = input_tag.get("value")
-                if not isinstance(name, str) or not isinstance(value, str):
-                    continue
-
-                params[name] = value
-
-        while True:
-            async with session.get(url, params=params, allow_redirects=True) as ret:
-                if ret.content_type == "text/html":
-                    await handle_file_too_big(ret)
-                    continue
-
-                with tempfile.TemporaryFile() as tmp:
-                    with tqdm(desc=f"Downloading {ret.content_disposition.filename}.",
-                              total=ret.content_length) as pbar:
-                        async for data, end_of_http_chunk in ret.content.iter_chunks():
-                            tmp.write(data)
-                            pbar.update(len(data))
-
-                    tmp.seek(0)
-
-                    with tqdm.wrapattr(tmp, "read",
-                                       desc="Unzipping gzipped archive.",
-                                       total=ret.content_length) as tar_stream, \
-                            filepath.open("wb") as f:
-                        shutil.copyfileobj(tar_stream, f)  # noqa
-                break
-
-
-async def download_bert_model(out_dir: Path) -> None:
-    ...
-
-
 @click.command()
 @click.option("--dataset-dir", type=click.Path(writable=True, file_okay=False, path_type=Path), required=True)
 @click.option("--model-dir", type=click.Path(writable=True, file_okay=False, path_type=Path), required=True)
@@ -165,8 +111,6 @@ def download(dataset_dir: Path, model_dir: Path):
     model_dir.mkdir(parents=True, exist_ok=True)
 
     asyncio.run(download_fyp_dataset(dataset_dir))
-    asyncio.run(download_word2vec_model(model_dir))
-    asyncio.run(download_bert_model(model_dir))
 
 
 if __name__ == '__main__':

@@ -21,7 +21,6 @@ dependencies = [
 [dependency-groups]
 build = [
     "click",
-    "kagglehub[polars-datasets]",
     "aiohttp[speedups]",
     "beautifulsoup4",
     "lxml"

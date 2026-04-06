@@ -3,14 +3,15 @@ from dataclasses import replace
 from typing import Iterable
 
 import numpy as np
+import gensim.downloader as api
 from gensim.models import KeyedVectors
 from haystack import component, Document
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 class Word2VecEmbedder:
-    def __init__(self, model: KeyedVectors):
-        self.model: KeyedVectors = model
+    def __init__(self, model: str):
+        self.model: KeyedVectors = api.load(model)
 
     def get_embeddings(self, texts: Iterable[str]) -> list[np.ndarray]:
         t1, t2 = itertools.tee(texts, 2)

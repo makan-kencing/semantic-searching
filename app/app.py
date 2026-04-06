@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
     documents = [Document(id=row["title"], content=row["abstract"]) for row in documents.iter_rows(named=True)]
 
     logger.info("Loading Word2Vec pipeline.")
-    pipelines["Word2Vec"] = create_word2vec_pipeline(Path("./models/GoogleNews-vectors-negative300.bin"), documents)
+    pipelines["Word2Vec"] = create_word2vec_pipeline(documents)
 
     # logger.info("Loading BERT pipeline.")
     # pipelines["BERT"] = create_bert_pipeline(documents)
