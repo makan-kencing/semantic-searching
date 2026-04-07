@@ -7,6 +7,7 @@ import gensim.downloader as api
 from gensim.models import KeyedVectors
 from haystack import component, Document
 from sklearn.feature_extraction.text import TfidfVectorizer
+from tqdm import tqdm
 
 
 class Word2VecEmbedder:
@@ -41,9 +42,7 @@ class Word2VecEmbedder:
 
             return np.sum(vectors, axis=0) / np.sum(weights)
 
-        return [
-            get_weighted_vector(text, i) for i, text in enumerate(t2)
-        ]
+        return list(tqdm(get_weighted_vector(text, i) for i, text in enumerate(t2)))
 
 
 @component

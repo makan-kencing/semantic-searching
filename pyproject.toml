@@ -15,7 +15,7 @@ dependencies = [
     "torch",
     "haystack-ai",
     "sentence_transformers",
-    "transformers<5"
+    "transformers==4.57.6"
 ]
 
 [dependency-groups]
@@ -27,4 +27,5 @@ build = [
 ]
 dev = [
     "ipykernel>=7.2.0",
+    "ipywidgets"
 ]
