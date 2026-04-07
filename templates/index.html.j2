@@ -38,6 +38,17 @@
         <label for="toggle-details">Show Details</label>
     </form>
 
+    <form hx-post="/hx-refresh" hx-target="#serch-results">
+        <input type="checkbox" name="use_hyde" id="hyde">
+        <label for="hyde">Apply Hypothetical Document Embeddings (HyDE)</label>
+
+        <input type="checkbox" name="use_bm25" id="bm25">
+        <label for="bm25">Apply BM25 Hybrid Search</label>
+
+        <input type="checkbox" name="use_evaluator" id="evaluator">
+        <label for="evaluator">Apply Semantic Evaluation Metrics</label>
+    </form>
+
     <div id="search-results">
     </div>
 </div>
