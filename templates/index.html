@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Semantic Searching - Final Year Papers</title>
+
+    <link rel="stylesheet" href="{{ url_for("static", path="/styles.css") }}">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div>
+    <header class="p-3 pb-0">
+        <h2>Semantic Searching - Final Year Project Repository</h2>
+    </header>
+
+    <div class="p-3 pb-0">
+        <form hx-get="/hx-search" hx-target="#search-results" hx-indicator="#indicator"
+              hx-trigger="change, input changed delay:1s from:#search, reload from:body, load"
+              onsubmit="return false"
+              class="d-flex gap-2">
+
+            <div class="input-group">
+                <label for="search" class="input-group-text">Search</label>
+
+                <div class="input-group w-auto">
+                    <select name="type" id="type" hx-trigger="change" class="form-select rounded-0" style="width: 60%">
+                        {% for pipeline in context.available_pipelines %}
+                            <option value="{{ pipeline }}">{{ pipeline }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="top_k" id="top_k" hx-trigger="change" class="form-select rounded-0">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+
+                <input id="search" name="query" type="search" hx-trigger="input changed delay:1s, keyup[key=='Enter']"
+                       placeholder="Search" class="form-control">
+            </div>
+
+        </form>
+
+        <form hx-post="/hx-refresh" hx-indicator="#indicator" class="mt-2 d-flex align-items-center">
+            <div class="btn-group">
+
+                <input type="checkbox" name="use_hyde" id="hyde" class="btn-check">
+                <label for="hyde" class="btn btn-outline-primary">Hypothetical Document Embeddings (HyDE)</label>
+
+                <input type="checkbox" name="use_bm25" id="bm25" class="btn-check">
+                <label for="bm25" class="btn btn-outline-primary">BM25 Hybrid Search</label>
+
+                <input type="checkbox" name="use_evaluator" id="evaluator" class="btn-check">
+                <label for="evaluator" class="btn btn-outline-primary">Semantic Evaluation Metrics</label>
+            </div>
+
+            <div class="d-inline-flex gap-2">
+                <button type="submit" class="btn btn-success ms-2">Apply</button>
+
+                <span id="indicator" class="htmx-indicator spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </span>
+            </div>
+        </form>
+    </div>
+
+    <div id="search-results" class="d-flex flex-column gap-3 p-3">
+    </div>
+</div>
+</body>
+</html>

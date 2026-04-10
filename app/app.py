@@ -59,7 +59,7 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html.j2", context={
+    return templates.TemplateResponse(request=request, name="index.html", context={
         "context": ApplicationContext(available_pipelines=tuple(pipelines.keys()))
     })
 
@@ -76,7 +76,7 @@ async def search(request: Request, query: str, type: str, top_k: int = 10):
     }, include_outputs_from={"result", "evaluator"})
     end_time = time.perf_counter()
 
-    return templates.TemplateResponse(request=request, name="search.html.j2", context={
+    return templates.TemplateResponse(request=request, name="search.html", context={
         "time_s": end_time - start_time,
         "documents": list(itertools.zip_longest(
             result["result"]["documents"],

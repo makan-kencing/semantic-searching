@@ -1,0 +1,43 @@
+<div>
+    Time taken: {{ time_s  * 1000 }} milliseconds.
+</div>
+
+{% if documents | length == 0 %}
+    <div>
+        Words not recognized
+    </div>
+{% endif %}
+
+{% for doc, similarity in documents %}
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mt-1 mb-1">{{ loop.index }}. {{ doc.id }}</h4>
+        </div>
+        <div class="card-body row">
+            <div class="col-sm-10">
+                {{ doc.content }}
+            </div>
+
+             <div class="col-sm-2 d-flex flex-column gap-2">
+                 <div class="card">
+                     <div class="card-header">
+                         Details
+                     </div>
+                     <div class="card-body">
+                         Algorithm rank: {{ doc.score }}
+                     </div>
+                 </div>
+                 {%  if similarity %}
+                     <div class="card">
+                         <div class="card-header">
+                             Metrics
+                         </div>
+                         <div class="card-body">
+                             Similarity: {{ similarity }}
+                         </div>
+                     </div>
+                 {% endif %}
+             </div>
+        </div>
+    </div>
+{% endfor %}
