@@ -12,33 +12,30 @@
 </head>
 <body>
 <div>
-    <form hx-get="/hx-search" hx-target="#search-results" hx-indicator="#search-indicator">
+    <form hx-get="/hx-search" hx-target="#search-results" hx-indicator="#search-indicator"
+          hx-trigger="change, input changed delay:1s from:#search, reload from:body, load"
+          onsubmit="return false">
         <label for="search">Search:</label>
-        <input id="search" name="query" type="search">
+        <input id="search" name="query" type="search" hx-trigger="input changed delay:1s, keyup[key=='Enter']">
 
-        <select name="type" id="type">
+        <select name="type" id="type" hx-trigger="change">
             {% for pipeline in context.available_pipelines %}
                 <option value="{{ pipeline }}">{{ pipeline }}</option>
             {% endfor %}
         </select>
 
-        <select name="top_k" id="top_k">
+        <select name="top_k" id="top_k" hx-trigger="change">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
         </select>
 
-        <button type="submit">Search</button>
-
         <span id="search-indicator" class="htmx-indicator">
             <img src="{{ url_for("static", path="img/bars.svg") }}" alt="">
         </span>
-
-        <input id="toggle-details" type="checkbox">
-        <label for="toggle-details">Show Details</label>
     </form>
 
-    <form hx-post="/hx-refresh" hx-target="#search-results" hx-indicator="#apply-indicator">
+    <form hx-post="/hx-refresh" hx-indicator="#apply-indicator">
         <input type="checkbox" name="use_hyde" id="hyde">
         <label for="hyde">Hypothetical Document Embeddings (HyDE)</label>
 
@@ -48,12 +45,15 @@
         <input type="checkbox" name="use_evaluator" id="evaluator">
         <label for="evaluator">Semantic Evaluation Metrics</label>
 
+        <button type="submit">Apply</button>
+
         <span id="apply-indicator" class="htmx-indicator">
             <img src="{{ url_for("static", path="img/bars.svg") }}" alt="">
         </span>
-
-        <button type="submit">Apply</button>
     </form>
+
+    <input id="toggle-details" type="checkbox">
+    <label for="toggle-details">Show Details</label>
 
     <div id="search-results">
     </div>
@@ -67,6 +67,5 @@
             detail_tags.forEach((value) => value.removeAttribute("open"));
     })
 </script>
-
 </body>
 </html>

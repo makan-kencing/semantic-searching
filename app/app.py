@@ -2,13 +2,15 @@ import itertools
 import logging
 import time
 from contextlib import asynccontextmanager
+from typing import Annotated
 
 import polars as pl
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from haystack import Pipeline, Document
+from starlette.status import HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from app.llm.pipeline import create as create_llm_pipeline
 from app.sbert.pipeline import create as create_sbert_pipeline
@@ -66,7 +68,7 @@ async def index(request: Request):
 async def search(request: Request, query: str, type: str, top_k: int = 10):
     pipeline = pipelines.get(type)
     if pipeline is None:
-        raise HTTPException(status_code=404)
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
     start_time = time.perf_counter()
     result = pipeline.run(data={
@@ -83,6 +85,12 @@ async def search(request: Request, query: str, type: str, top_k: int = 10):
     })
 
 
-@app.post("/hx-refresh")
-def refresh(use_hyde: bool = False, use_bm25: bool = False, use_evaluator: bool = False) -> None:
+@app.post("/hx-refresh", status_code=HTTP_204_NO_CONTENT)
+def refresh(use_hyde: Annotated[bool, Form()] = False,
+            use_bm25: Annotated[bool, Form()] = False,
+            use_evaluator: Annotated[bool, Form()] = False):
     refresh_pipeline(use_hyde, use_bm25, use_evaluator)
+
+    response = Response(status_code=HTTP_204_NO_CONTENT)
+    response.headers["HX-Trigger"] = "reload"
+    return response

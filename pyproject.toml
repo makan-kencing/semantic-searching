@@ -15,7 +15,8 @@ dependencies = [
     "torch",
     "haystack-ai",
     "sentence_transformers",
-    "transformers==4.57.6"
+    "transformers==4.57.6",
+    "python-multipart"
 ]
 
 [dependency-groups]
