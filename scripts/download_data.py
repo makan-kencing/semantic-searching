@@ -8,7 +8,9 @@ from typing import AsyncIterable
 
 import aiohttp
 import click
+import gensim.downloader as api
 from bs4 import BeautifulSoup
+from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 from yarl import URL
 
@@ -111,6 +113,13 @@ def download(dataset_dir: Path, model_dir: Path):
     model_dir.mkdir(parents=True, exist_ok=True)
 
     asyncio.run(download_fyp_dataset(dataset_dir))
+
+    logger.info("Downloading models.")
+    api.load("word2vec-google-news-300")
+    SentenceTransformer("valhalla/distilbart-mnli-12-3")
+    SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    SentenceTransformer("google/flan-t5-large")
+    SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
 
 
 if __name__ == '__main__':
