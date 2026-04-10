@@ -125,10 +125,9 @@ def evaluate(dataset_path: Path, output: Path):
                     documents=retrieved_documents
                 )["scores"]
                 average_semantic_similarity = sum(semantic_similarities) / len(semantic_similarities)
-                f.write(f"{similarity = }\n")
+                f.write(f"{average_semantic_similarity = }\n")
 
                 f.write("\n")
-        f.write("=" * 40 + "\n")
 
 
 if __name__ == '__main__':
