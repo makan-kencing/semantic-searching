@@ -74,60 +74,63 @@ def evaluate(dataset_path: Path, output: Path):
             pipeline = factory.make()
             top_k = 10
             for query, ground_truth_documents in grounded_truth_documents.items():
-                get_results = lambda: pipeline.run(data={
-                    "query": {"query": query, "top_k": top_k}
-                })
+                try:
+                    get_results = lambda: pipeline.run(data={
+                        "query": {"query": query, "top_k": top_k}
+                    })
 
-                runtime = timeit(get_results, number=iterations) / iterations * 1000
-                results = get_results()
+                    runtime = timeit(get_results, number=iterations) / iterations * 1000
+                    results = get_results()
 
-                retrieved_documents = results["result"]["documents"]
-                relevant_documents = [doc for doc in results["result"]["documents"]
-                                      if any(gt.id == doc.id for gt in ground_truth_documents)]
+                    retrieved_documents = results["result"]["documents"]
+                    relevant_documents = [doc for doc in results["result"]["documents"]
+                                          if any(gt.id == doc.id for gt in ground_truth_documents)]
 
-                f.write(f"{query = }\n")
-                f.write("-" * 40 + "\n")
+                    f.write(f"{query = }\n")
+                    f.write("-" * 40 + "\n")
 
-                f.write(f"{len(retrieved_documents) = }\n")
-                f.write(f"{len(relevant_documents) = }\n")
-                f.write(f"{runtime = }ms\n")
+                    f.write(f"{len(retrieved_documents) = }\n")
+                    f.write(f"{len(relevant_documents) = }\n")
+                    f.write(f"{runtime = }ms\n")
 
-                precision = len(relevant_documents) / len(retrieved_documents)
-                f.write(f"{precision = }\n")
+                    precision = len(relevant_documents) / len(retrieved_documents)
+                    f.write(f"{precision = }\n")
 
-                recall = len(relevant_documents) / len(ground_truth_documents)
-                f.write(f"{recall = }\n")
+                    recall = len(relevant_documents) / len(ground_truth_documents)
+                    f.write(f"{recall = }\n")
 
-                fallout = (len(retrieved_documents) - len(relevant_documents)) / \
-                    (len(documents) - len(ground_truth_documents))
-                f.write(f"{fallout = }\n")
+                    fallout = (len(retrieved_documents) - len(relevant_documents)) / \
+                              (len(documents) - len(ground_truth_documents))
+                    f.write(f"{fallout = }\n")
 
-                f_score_1 = f_score(1, precision=precision, recall=recall)
-                f.write(f"{f_score_1 = }\n")
+                    f_score_1 = f_score(1, precision=precision, recall=recall)
+                    f.write(f"{f_score_1 = }\n")
 
-                f_score_2 = f_score(2, precision=precision, recall=recall)
-                f.write(f"{f_score_2 = }\n")
+                    f_score_2 = f_score(2, precision=precision, recall=recall)
+                    f.write(f"{f_score_2 = }\n")
 
-                ndcg = ndcg_eval.run(
-                    ground_truth_documents=[ground_truth_documents],
-                    retrieved_documents=[results["result"]["documents"]]
-                )["score"]
-                f.write(f"{ndcg = }\n")
+                    ndcg = ndcg_eval.run(
+                        ground_truth_documents=[ground_truth_documents],
+                        retrieved_documents=[results["result"]["documents"]]
+                    )["score"]
+                    f.write(f"{ndcg = }\n")
 
-                ap = map_eval.run(
-                    ground_truth_documents=[ground_truth_documents],
-                    retrieved_documents=[results["result"]["documents"]]
-                )["score"]
-                f.write(f"{ap = }\n")
+                    ap = map_eval.run(
+                        ground_truth_documents=[ground_truth_documents],
+                        retrieved_documents=[results["result"]["documents"]]
+                    )["score"]
+                    f.write(f"{ap = }\n")
 
-                semantic_similarities = semantic_eval.run(
-                    query=query,
-                    documents=retrieved_documents
-                )["scores"]
-                average_semantic_similarity = sum(semantic_similarities) / len(semantic_similarities)
-                f.write(f"{average_semantic_similarity = }\n")
-
-                f.write("\n")
+                    semantic_similarities = semantic_eval.run(
+                        query=query,
+                        documents=retrieved_documents
+                    )["scores"]
+                    average_semantic_similarity = sum(semantic_similarities) / len(semantic_similarities)
+                    f.write(f"{average_semantic_similarity = }\n")
+                except ZeroDivisionError:
+                    f.write("Division by zero\n")
+                finally:
+                    f.write("\n")
 
 
 if __name__ == '__main__':
