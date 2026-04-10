@@ -8,6 +8,7 @@ from haystack.components.generators import HuggingFaceLocalGenerator
 from haystack.components.joiners import DocumentJoiner
 from haystack.components.retrievers import InMemoryBM25Retriever, InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
+from txtai.pipeline import Similarity
 
 from app.components import SimilarityEvaluator, HypotheticalDocumentEmbedder, Passthrough
 
@@ -29,6 +30,8 @@ def get_or_create_document_store(
         return document_store
     return InMemoryDocumentStore.load_from_disk(str(cache_path))
 
+
+similarity = Similarity("valhalla/distilbart-mnli-12-3")
 
 class PipelineFactory:
     def __init__(self, text_embedder, document_embedder, document_store):
@@ -103,7 +106,7 @@ class PipelineFactory:
         pipeline.connect("bm25_retriever.documents", receiver)
 
     def _add_evaluator(self, pipeline: Pipeline, sender_query: str, sender_documents: str, receiver: str = None) -> None:
-        evaluator = SimilarityEvaluator("valhalla/distilbart-mnli-12-3")
+        evaluator = SimilarityEvaluator(similarity)
 
         pipeline.add_component(name="evaluator", instance=evaluator)  # noqa
 

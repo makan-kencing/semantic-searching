@@ -18,8 +18,9 @@ def create(documents: list[Document], *, force_embeddings: bool = False) -> Pipe
     text_embedder = Word2VecTextEmbedder(model)
 
     logger.info("Creating Word2Vec document embeddings.")
-    document_store = get_or_create_document_store(documents, embedder=doc_embedder, cache_path=cache,
-                                                  force_refresh=force_embeddings)
+    document_store = get_or_create_document_store(
+        documents, embedder=doc_embedder, cache_path=cache, force_refresh=force_embeddings
+    )
 
     return PipelineFactory(text_embedder, doc_embedder, document_store)
 

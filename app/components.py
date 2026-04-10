@@ -1,14 +1,16 @@
+from dataclasses import replace
 from typing import Any
 
 import numpy as np
 from haystack import component, Document
+from sentence_transformers import SentenceTransformer
 from txtai.pipeline import Similarity
 
 
 @component
 class SimilarityEvaluator:
-    def __init__(self, model: str):
-        self.similarity = Similarity(model)
+    def __init__(self, model: Similarity):
+        self.similarity = model
 
     @component.output_types(scores=list[float])
     def run(self, query: str, documents: list[Document]) -> dict[str, list[float]]:
@@ -39,8 +41,43 @@ class HypotheticalDocumentEmbedder:
         return {"hypothetical_embedding": hyde_vector[0].tolist()}
 
 
+class SentenceTransformerEmbedder:
+    def __init__(self, model: SentenceTransformer):
+        self.model = model
+
+
+@component
+class SentenceTransformerQueryEmbedder(SentenceTransformerEmbedder):
+    @component.output_types(embedding=list[float])
+    def run(self, text: str) -> dict[str, list[float]]:
+        if not isinstance(text, str):
+            raise TypeError("SentenceTransformerQueryEmbedder expects a string as input.")
+
+        embeddings = self.model.encode_query(text, show_progress_bar=True)
+
+        return {"embedding": embeddings.tolist()}
+
+
+@component
+class SentenceTransformerDocumentEmbedder(SentenceTransformerEmbedder):
+    @component.output_types(documents=list[Document])
+    def run(self, documents: list[Document]) -> dict[str, list[Document]]:
+        if not isinstance(documents, list) or documents and not isinstance(documents[0], Document):
+            raise TypeError("SentenceTransformerDocumentEmbedder expects a list of Documents as input.")
+
+        embeddings = self.model.encode_document([doc.content or "" for doc in documents], show_progress_bar=True)
+
+        new_documents = []
+        for doc, emb in zip(documents, embeddings, strict=True):
+            new_documents.append(replace(doc, embedding=emb.tolist()))
+
+        return {"documents": new_documents}
+
+
 __all__ = (
     "SimilarityEvaluator",
     "Passthrough",
-    "HypotheticalDocumentEmbedder"
+    "HypotheticalDocumentEmbedder",
+    "SentenceTransformerQueryEmbedder",
+    "SentenceTransformerDocumentEmbedder"
 )
