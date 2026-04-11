@@ -49,6 +49,20 @@ def evaluate(dataset: Path, output: Path, iterations: int):
             "A Review on the Effect of Different Yeasts on the Fermentation of Red Dragon Fruit",
             "Bioactive Compounds and Physical Analysis of Bentong Gingers and Commercial Gingers Powder by Different Storage Temperature",
             "Effect of Lactic Acid Bacteria on the Physicochemical, Anti-Inflammatory Antioxidant and Microbiological Properties of Kombucha",
+        ))),
+        "Development of mechanical machines and physical hardware": dataset.filter(pl.col("title").is_in((
+            "Aluminium Can Crusher Machine",
+            "Design and Build Delivery Robot",
+            "Design of an Automated Powder Spray System for Cable Trunk",
+            "Design and Development of Low-Cost Wind Powered Motorcycle Mobile Charger",
+            "Design and Develop a Cost-Effective Hydroponics Autodoser System",
+            "Arduino Based Dual-Axis Solar Tracking System",
+            "Dielectric Strength Tester for Crude Palm Oil",
+            "Disturbance Force Compensation Using Robust Controller in Linear Drive Positioning System",
+            "Robot Control Interface with Video Feedback for Wireless Camera",
+            "Investigate on the Breakdown Performance of Insulation Transformer Oil",
+            "Investigating Energy Loss of Flow Over Non-Smooth Surfaces in an Open Channel Flow",
+            "Investigating and Analyzing of Voltage Distributions Along High Voltage Insulators",
         )))
     }
 
