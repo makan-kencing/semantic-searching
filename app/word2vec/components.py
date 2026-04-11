@@ -2,6 +2,8 @@ import itertools
 from dataclasses import replace
 from typing import Iterable
 
+import re
+import string
 import numpy as np
 from gensim.models import KeyedVectors
 from haystack import component, Document
@@ -10,6 +12,9 @@ from tqdm import tqdm
 
 
 class Word2VecEmbedder:
+    REMOVE_PUNCTUATIONS = re.compile(rf"[{string.punctuation}]")
+    REMOVE_NUMBERS = re.compile(r"\w*\d\w*")
+
     def __init__(self, model: KeyedVectors):
         self.model: KeyedVectors = model
 
@@ -24,7 +29,9 @@ class Word2VecEmbedder:
         word_to_idx = tfidf_vectorizer.vocabulary_
 
         def get_weighted_vector(text, row_idx):
-            words = str(text).lower().split()
+            text = self.REMOVE_PUNCTUATIONS.sub(text, " ")
+            text = self.REMOVE_NUMBERS.sub(text, "")
+            words = text.lower().split()
             vectors = []
             weights = []
 
