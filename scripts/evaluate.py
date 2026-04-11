@@ -16,18 +16,17 @@ ndcg_eval = DocumentNDCGEvaluator()
 map_eval = DocumentMAPEvaluator()
 semantic_eval = SimilarityEvaluator(similarity)
 
-iterations = 20
-
 
 def f_score(b: int = 1, *, precision: float, recall: float) -> float:
     return (1 + b ** 2) * (precision * recall) / (b ** 2 * precision + recall)
 
 
 @click.command()
-@click.option("--dataset-path", type=click.Path(writable=True, dir_okay=False, path_type=Path), required=True)
+@click.option("--dataset", "-i", type=click.Path(writable=True, dir_okay=False, path_type=Path), required=True)
 @click.option("--output", "-o", type=click.Path(writable=True, dir_okay=False, path_type=Path), required=True)
-def evaluate(dataset_path: Path, output: Path):
-    dataset = pl.read_csv(dataset_path) \
+@click.option("--iterations", "-n", default=20)
+def evaluate(dataset: Path, output: Path, iterations: int):
+    dataset: pl.DataFrame = pl.read_csv(dataset) \
         .filter(pl.col("abstract").is_not_null()) \
         .unique("title")
     grounded_truth_datasets: dict[str, pl.DataFrame] = {

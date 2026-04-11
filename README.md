@@ -8,19 +8,24 @@ in multiple methods.
 
 ## Methods
 
-1. Method 1
-2. Method 2
-3. Method 3
+1. Word2Vec
+2. Sentence BERT
+3. Large Language Model (LLM)
 
-### Method 1
+### Word2Vec
 
-### Method 2
+### Sentence BERT
 
-### Method 3
-
+### Large Language Model (LLM)
 
 ## Setup
 
 ```shell
- uv run --group build ./scripts/download_data.py --dataset-dir ./data --model-dir ./models
+uv run --group build ./scripts/download_data.py --dataset-dir ./data --model-dir ./models
+```
+
+### Evaluation
+
+```shell
+uv run ./scripts/evaluate.py -i ./data/50-fyp.csv -n 20 -o results.txt
 ```
