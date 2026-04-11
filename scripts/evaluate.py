@@ -25,7 +25,9 @@ def f_score(b: int = 1, *, precision: float, recall: float) -> float:
 @click.option("--dataset", "-i", type=click.Path(writable=True, dir_okay=False, path_type=Path), required=True)
 @click.option("--output", "-o", type=click.Path(writable=True, dir_okay=False, path_type=Path), required=True)
 @click.option("--iterations", "-n", default=20)
-def evaluate(dataset: Path, output: Path, iterations: int):
+@click.option("--hyde", is_flag=True)
+@click.option("--bm25", is_flag=True)
+def evaluate(dataset: Path, output: Path, iterations: int, hyde: bool, bm25: bool):
     dataset: pl.DataFrame = pl.read_csv(dataset) \
         .filter(pl.col("abstract").is_not_null()) \
         .unique("title")
@@ -84,6 +86,10 @@ def evaluate(dataset: Path, output: Path, iterations: int):
             f.write(f"Evaluating {name}.\n")
             f.write("=" * 40 + "\n")
 
+            if hyde:
+                factory.with_hyde()
+            if bm25:
+                factory.with_bm25()
             pipeline = factory.make()
             top_k = 10
             for query, ground_truth_documents in grounded_truth_documents.items():
